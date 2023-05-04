@@ -1,0 +1,38 @@
+{
+  "name": "rss-front",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "api": "rm -rf api && openapi-generator-cli generate -i http://localhost:5000/docs-json -g typescript-fetch -t openapi-generator-templates/ -o api/ --additional-properties=typescriptThreePlus=true;generateAliasAsModel=true && node_modules/.bin/prettier --write \"api/**/*.ts\"",
+    "api-win": "openapi-generator-cli generate -i http://localhost:5000/docs-json -g typescript-fetch -t openapi-generator-templates/ -o api/ --additional-properties=typescriptThreePlus=true;generateAliasAsModel=true && node_modules/.bin/prettier --write \"api/**/*.ts\"",
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint"
+  },
+  "dependencies": {
+    "@reduxjs/toolkit": "^1.9.3",
+    "axios": "^1.3.4",
+    "eslint": "8.36.0",
+    "eslint-config-next": "13.2.4",
+    "next": "13.2.4",
+    "react": "18.2.0",
+    "react-dom": "18.2.0",
+    "react-redux": "^8.0.5",
+    "sass": "^1.60.0"
+  },
+  "devDependencies": {
+    "@openapitools/openapi-generator-cli": "^2.6.0",
+    "@types/node": "18.15.10",
+    "@types/react": "18.0.29",
+    "@types/react-dom": "18.0.11",
+    "@types/react-redux": "^7.1.25",
+    "prettier": "^2.8.8",
+    "stylelint": "^15.6.1",
+    "stylelint-config-idiomatic-order": "^9.0.0",
+    "stylelint-config-prettier": "^9.0.5",
+    "stylelint-config-sass-guidelines": "^10.0.0",
+    "stylelint-config-standard": "^33.0.0",
+    "typescript": "5.0.2"
+  }
+}
