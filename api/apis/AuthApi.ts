@@ -92,7 +92,7 @@ export class AuthApi extends runtime.BaseAPI {
   async authControllerRegisterRaw(
     requestParameters: AuthControllerRegisterRequest,
     initOverrides?: RequestInit | runtime.InitOverrideFunction
-  ): Promise<runtime.ApiResponse<void>> {
+  ): Promise<runtime.ApiResponse<ResponseLoginDto>> {
     if (
       requestParameters.user === null ||
       requestParameters.user === undefined
@@ -120,7 +120,9 @@ export class AuthApi extends runtime.BaseAPI {
       initOverrides
     );
 
-    return new runtime.VoidApiResponse(response);
+    return new runtime.JSONApiResponse(response, (jsonValue) =>
+      ResponseLoginDtoFromJSON(jsonValue)
+    );
   }
 
   /**
@@ -129,7 +131,11 @@ export class AuthApi extends runtime.BaseAPI {
   async authControllerRegister(
     requestParameters: AuthControllerRegisterRequest,
     initOverrides?: RequestInit | runtime.InitOverrideFunction
-  ): Promise<void> {
-    await this.authControllerRegisterRaw(requestParameters, initOverrides);
+  ): Promise<ResponseLoginDto> {
+    const response = await this.authControllerRegisterRaw(
+      requestParameters,
+      initOverrides
+    );
+    return await response.value();
   }
 }

@@ -7,7 +7,7 @@ import { FC, useState } from "react";
 
 const Login: FC = () => {
   const [email, setEmail] = useState("test@gmail.com");
-  const [password, setPassword] = useState("admin11");
+  const [password, setPassword] = useState("123456");
   const [error, setError] = useState("");
   const router = useRouter();
 
@@ -24,10 +24,20 @@ const Login: FC = () => {
     }
   };
 
+  const registerUser = async () => {
+    try {
+      const response = await AuthApiService.authControllerRegister({ user: { id: 0, email: 'test@gmail.com', password: '123456' } });
+      localStorage.setItem('token', response.token);
+      router.push("/");
+    } catch (error) {
+      setError('User already exists');
+    }
+  }
+
   return (
     <div className="login w-full flex flex-col items-center justify-center">
       <div className="border-2 border-solid border-orange-200 rounded p-5">
-        <h1 className="mb-10">Login: [test@gmail.com:admin11]</h1>
+        <h1 className="mb-10">Login:</h1>
         <form className="block mt-10">
           <Input
             wrapperClassName="block margin-top-4"
@@ -44,7 +54,10 @@ const Login: FC = () => {
             onChange={(val) => setPassword(val)}
           />
 
-          <Button label="Submit" onClick={handleSubmit} className="block margin-top-4" />
+          <div className="flex items-center justify-between">
+            <Button label="Create User" onClick={registerUser} className="block margin-top-4" />
+            <Button label="Submit" onClick={handleSubmit} className="block margin-top-4" />
+          </div>
           <p className="text-red">{error}</p>
         </form>
       </div>
