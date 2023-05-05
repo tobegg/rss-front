@@ -1,22 +1,18 @@
-import Head from 'next/head'
-import { PostsApiService } from '@/services/api';
-import { FC, useEffect, useState } from 'react';
-import { Post } from '@/api';
-import Image from 'next/image';
+import Head from 'next/head';
+import { FC, useEffect } from 'react';
+import PostsContainer from '@/components/PostsContainer';
+import { useRouter } from 'next/router';
 
 const Home: FC = () => {
-  const [posts, setPosts] = useState<Post[]>([]);
-
-  const getPosts = async () => {
-    const postList = await PostsApiService.postsControllerFindAll();
-    setPosts(postList);
-  }
+  const router = useRouter();
 
   useEffect(() => {
-    getPosts();
+    const token = localStorage.getItem('token');
+    console.log('token', token);
+    if (!token) {
+      router.push("/login");
+    }
   }, []);
-
-  console.log(posts);
 
   return (
     <>
@@ -26,27 +22,8 @@ const Home: FC = () => {
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <main>
-        <h1>Posts:</h1>
-        <div>
-          {posts.map(item => (
-            <div key={item.id} className="post">
-              {item.image && (
-                <Image
-                  src={item.image}
-                  width={50}
-                  height={50}
-                  alt={item.title}
-                />
-              )}
-              <div className="post__description">
-                <h4>{item.author}</h4>
-                <div>{item.title}</div>
-                <div>{item.description}</div>
-              </div>
-            </div>
-          ))}
-        </div>
+      <main className="main">
+        <PostsContainer />
       </main>
     </>
   )

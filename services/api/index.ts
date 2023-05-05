@@ -1,4 +1,4 @@
-import { Configuration, UsersApi, PostsApi } from '@/api';
+import { Configuration, UsersApi, PostsApi, AuthApi } from '@/api';
 import { apiUrl } from '@/core/constants';
 
 
@@ -11,4 +11,5 @@ const config = new Configuration({
 });
 
 export const UsersApiService = new UsersApi(config);
+export const AuthApiService = new AuthApi(config);
 export const PostsApiService = new PostsApi(config);

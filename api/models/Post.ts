@@ -39,16 +39,22 @@ export interface Post {
   description: string;
   /**
    * Post categories
-   * @type {Array<string>}
+   * @type {string}
    * @memberof Post
    */
-  categories: Array<string>;
+  categories: string;
   /**
    * Main post image
    * @type {string}
    * @memberof Post
    */
   image: string;
+  /**
+   * Post author
+   * @type {string}
+   * @memberof Post
+   */
+  author: string;
 }
 
 /**
@@ -61,6 +67,7 @@ export function instanceOfPost(value: object): boolean {
   isInstance = isInstance && "description" in value;
   isInstance = isInstance && "categories" in value;
   isInstance = isInstance && "image" in value;
+  isInstance = isInstance && "author" in value;
 
   return isInstance;
 }
@@ -82,6 +89,7 @@ export function PostFromJSONTyped(
     description: json["description"],
     categories: json["categories"],
     image: json["image"],
+    author: json["author"],
   };
 }
 
@@ -98,5 +106,6 @@ export function PostToJSON(value?: Post | null): any {
     description: value.description,
     categories: value.categories,
     image: value.image,
+    author: value.author,
   };
 }

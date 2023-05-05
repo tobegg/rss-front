@@ -13,8 +13,13 @@
  */
 
 import * as runtime from "../runtime";
-import type { User } from "../models";
-import { UserFromJSON, UserToJSON } from "../models";
+import type { ResponseLoginDto, User } from "../models";
+import {
+  ResponseLoginDtoFromJSON,
+  ResponseLoginDtoToJSON,
+  UserFromJSON,
+  UserToJSON,
+} from "../models";
 
 export interface AuthControllerLoginRequest {
   user: User;
@@ -34,7 +39,7 @@ export class AuthApi extends runtime.BaseAPI {
   async authControllerLoginRaw(
     requestParameters: AuthControllerLoginRequest,
     initOverrides?: RequestInit | runtime.InitOverrideFunction
-  ): Promise<runtime.ApiResponse<void>> {
+  ): Promise<runtime.ApiResponse<ResponseLoginDto>> {
     if (
       requestParameters.user === null ||
       requestParameters.user === undefined
@@ -62,7 +67,9 @@ export class AuthApi extends runtime.BaseAPI {
       initOverrides
     );
 
-    return new runtime.VoidApiResponse(response);
+    return new runtime.JSONApiResponse(response, (jsonValue) =>
+      ResponseLoginDtoFromJSON(jsonValue)
+    );
   }
 
   /**
@@ -71,8 +78,12 @@ export class AuthApi extends runtime.BaseAPI {
   async authControllerLogin(
     requestParameters: AuthControllerLoginRequest,
     initOverrides?: RequestInit | runtime.InitOverrideFunction
-  ): Promise<void> {
-    await this.authControllerLoginRaw(requestParameters, initOverrides);
+  ): Promise<ResponseLoginDto> {
+    const response = await this.authControllerLoginRaw(
+      requestParameters,
+      initOverrides
+    );
+    return await response.value();
   }
 
   /**

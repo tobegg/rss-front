@@ -1,4 +1,3 @@
-.openapi-generator-ignore
 apis/AuthApi.ts
 apis/PostsApi.ts
 apis/UsersApi.ts
@@ -7,6 +6,9 @@ index.ts
 models/CreatePostDto.ts
 models/CreateUserDto.ts
 models/Post.ts
+models/ResponseLoginDto.ts
+models/ResponsePostDto.ts
+models/SearchPostDto.ts
 models/User.ts
 models/index.ts
 runtime.ts

@@ -13,15 +13,37 @@
  */
 
 import * as runtime from "../runtime";
-import type { CreatePostDto, Post } from "../models";
+import type {
+  CreatePostDto,
+  Post,
+  ResponsePostDto,
+  SearchPostDto,
+} from "../models";
 import {
   CreatePostDtoFromJSON,
   CreatePostDtoToJSON,
   PostFromJSON,
   PostToJSON,
+  ResponsePostDtoFromJSON,
+  ResponsePostDtoToJSON,
+  SearchPostDtoFromJSON,
+  SearchPostDtoToJSON,
 } from "../models";
 
 export interface PostsControllerCreateRequest {
+  createPostDto: CreatePostDto;
+}
+
+export interface PostsControllerFindAllRequest {
+  searchPostDto: SearchPostDto;
+}
+
+export interface PostsControllerRemoveRequest {
+  id: string;
+}
+
+export interface PostsControllerUpdateRequest {
+  id: string;
   createPostDto: CreatePostDto;
 }
 
@@ -86,24 +108,38 @@ export class PostsApi extends runtime.BaseAPI {
    * All Posts getting
    */
   async postsControllerFindAllRaw(
+    requestParameters: PostsControllerFindAllRequest,
     initOverrides?: RequestInit | runtime.InitOverrideFunction
-  ): Promise<runtime.ApiResponse<Array<Post>>> {
+  ): Promise<runtime.ApiResponse<ResponsePostDto>> {
+    if (
+      requestParameters.searchPostDto === null ||
+      requestParameters.searchPostDto === undefined
+    ) {
+      throw new runtime.RequiredError(
+        "searchPostDto",
+        "Required parameter requestParameters.searchPostDto was null or undefined when calling postsControllerFindAll."
+      );
+    }
+
     const queryParameters: any = {};
 
     const headerParameters: runtime.HTTPHeaders = {};
 
+    headerParameters["Content-Type"] = "application/json";
+
     const response = await this.request(
       {
-        path: `/posts`,
-        method: "GET",
+        path: `/posts/search`,
+        method: "POST",
         headers: headerParameters,
         query: queryParameters,
+        body: SearchPostDtoToJSON(requestParameters.searchPostDto),
       },
       initOverrides
     );
 
     return new runtime.JSONApiResponse(response, (jsonValue) =>
-      jsonValue.map(PostFromJSON)
+      ResponsePostDtoFromJSON(jsonValue)
     );
   }
 
@@ -111,9 +147,112 @@ export class PostsApi extends runtime.BaseAPI {
    * All Posts getting
    */
   async postsControllerFindAll(
+    requestParameters: PostsControllerFindAllRequest,
     initOverrides?: RequestInit | runtime.InitOverrideFunction
-  ): Promise<Array<Post>> {
-    const response = await this.postsControllerFindAllRaw(initOverrides);
+  ): Promise<ResponsePostDto> {
+    const response = await this.postsControllerFindAllRaw(
+      requestParameters,
+      initOverrides
+    );
     return await response.value();
+  }
+
+  /**
+   * Delete Post by id
+   */
+  async postsControllerRemoveRaw(
+    requestParameters: PostsControllerRemoveRequest,
+    initOverrides?: RequestInit | runtime.InitOverrideFunction
+  ): Promise<runtime.ApiResponse<void>> {
+    if (requestParameters.id === null || requestParameters.id === undefined) {
+      throw new runtime.RequiredError(
+        "id",
+        "Required parameter requestParameters.id was null or undefined when calling postsControllerRemove."
+      );
+    }
+
+    const queryParameters: any = {};
+
+    const headerParameters: runtime.HTTPHeaders = {};
+
+    const response = await this.request(
+      {
+        path: `/posts/{id}`.replace(
+          `{${"id"}}`,
+          encodeURIComponent(String(requestParameters.id))
+        ),
+        method: "DELETE",
+        headers: headerParameters,
+        query: queryParameters,
+      },
+      initOverrides
+    );
+
+    return new runtime.VoidApiResponse(response);
+  }
+
+  /**
+   * Delete Post by id
+   */
+  async postsControllerRemove(
+    requestParameters: PostsControllerRemoveRequest,
+    initOverrides?: RequestInit | runtime.InitOverrideFunction
+  ): Promise<void> {
+    await this.postsControllerRemoveRaw(requestParameters, initOverrides);
+  }
+
+  /**
+   */
+  async postsControllerUpdateRaw(
+    requestParameters: PostsControllerUpdateRequest,
+    initOverrides?: RequestInit | runtime.InitOverrideFunction
+  ): Promise<runtime.ApiResponse<void>> {
+    if (requestParameters.id === null || requestParameters.id === undefined) {
+      throw new runtime.RequiredError(
+        "id",
+        "Required parameter requestParameters.id was null or undefined when calling postsControllerUpdate."
+      );
+    }
+
+    if (
+      requestParameters.createPostDto === null ||
+      requestParameters.createPostDto === undefined
+    ) {
+      throw new runtime.RequiredError(
+        "createPostDto",
+        "Required parameter requestParameters.createPostDto was null or undefined when calling postsControllerUpdate."
+      );
+    }
+
+    const queryParameters: any = {};
+
+    const headerParameters: runtime.HTTPHeaders = {};
+
+    headerParameters["Content-Type"] = "application/json";
+
+    const response = await this.request(
+      {
+        path: `/posts/{id}`.replace(
+          `{${"id"}}`,
+          encodeURIComponent(String(requestParameters.id))
+        ),
+        method: "PATCH",
+        headers: headerParameters,
+        query: queryParameters,
+        body: CreatePostDtoToJSON(requestParameters.createPostDto),
+      },
+      initOverrides
+    );
+
+    return new runtime.VoidApiResponse(response);
+  }
+
+  /**
+   */
+  async postsControllerUpdate(
+    requestParameters: PostsControllerUpdateRequest,
+    initOverrides?: RequestInit | runtime.InitOverrideFunction
+  ): Promise<void> {
+    await this.postsControllerUpdateRaw(requestParameters, initOverrides);
   }
 }

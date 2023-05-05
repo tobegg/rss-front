@@ -33,10 +33,10 @@ export interface CreatePostDto {
   description: string;
   /**
    * Categories
-   * @type {Array<string>}
+   * @type {string}
    * @memberof CreatePostDto
    */
-  categories: Array<string>;
+  categories: string;
   /**
    * Image url
    * @type {string}
